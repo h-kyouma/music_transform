@@ -31,4 +31,8 @@ def download_database():
     unpack_files(parts)
     [os.remove(part) for part in parts]
     
+    #remove corrupted files
+    os.remove('9/american_baroque-dances_and_suites_of_rameau_and_couperin-25-le_petit_rien_xiveme_ordre_couperin-88-117.mp3')
+    os.remove('8/jacob_heringman-josquin_des_prez_lute_settings-19-gintzler__pater_noster-204-233.mp3')
+    
     print('>>> DONE <<<')

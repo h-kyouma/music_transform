@@ -7,12 +7,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def create_dirs():
-    paths = ['CQT spectrograms/test', 'CQT spectrograms/train',
-             'Log-power spectrograms/test', 'Log-power spectrograms/train']
+    paths = ['CQT spectrograms','Log-power spectrograms']
     
     [os.makedirs(path) for path in paths if not os.path.exists(path)]
 
-def save_CQT(y, sr, filename, randomizer):
+def save_CQT(y, sr, filename):
     C = np.abs(librosa.cqt(y, sr=sr))
     
     fig = plt.figure(frameon=False)
@@ -21,16 +20,10 @@ def save_CQT(y, sr, filename, randomizer):
     librosa.display.specshow(librosa.amplitude_to_db(C))
     plt.set_cmap('magma')
     
-    if(randomizer > 1 or randomizer < -1):
-        plt.savefig('CQT spectrograms/test/'+filename+'.png', 
-                    bbox_inches='tight',  
-                    pad_inches=0, 
-                    dpi=100)
-    else:
-        plt.savefig('CQT spectrograms/train/'+filename+'.png', 
-                    bbox_inches='tight',
-                    pad_inches=0, 
-                    dpi=100)
+    plt.savefig('CQT spectrograms/'+filename+'.png', 
+                bbox_inches='tight',  
+                pad_inches=0, 
+                dpi=100)
         
     #to avoid leaking RAM
     #-------------------------
@@ -40,7 +33,7 @@ def save_CQT(y, sr, filename, randomizer):
     gc.collect()
     #-------------------------
     
-def save_log_power(y, sr, filename, randomizer):
+def save_log_power(y, sr, filename):
     S = np.abs(librosa.stft(y))
     
     fig = plt.figure()
@@ -50,16 +43,10 @@ def save_log_power(y, sr, filename, randomizer):
                              sr=sr)
     plt.set_cmap('magma')
     
-    if(randomizer > 1 or randomizer < -1):
-        plt.savefig('Log-power spectrograms/test/'+filename+'.png', 
-                    bbox_inches='tight', 
-                    pad_inches=0, 
-                    dpi=100)
-    else:
-        plt.savefig('Log-power spectrograms/train/'+filename+'.png', 
-                    bbox_inches='tight',  
-                    pad_inches=0, 
-                    dpi=100)
+    plt.savefig('Log-power spectrograms/'+filename+'.png', 
+                bbox_inches='tight', 
+                pad_inches=0, 
+                dpi=100)
         
     #to avoid leaking RAM
     #-------------------------
@@ -81,8 +68,7 @@ def create_spectrograms():
         print('\rSpectrogram %s' %counter + ' of ' + str(len(mp3_paths)), end="   ")
         filename = mp3_path.split('/')[-1][:-4]
         y, sr = librosa.load(mp3_path)
-        randomizer = np.random.normal()
-        save_CQT(y, sr, filename, randomizer)
-        save_log_power(y, sr, filename, randomizer)
+        save_CQT(y, sr, filename)
+        save_log_power(y, sr, filename)
         
-    print('>>> DONE <<<')
+    print('\n>>> DONE <<<')

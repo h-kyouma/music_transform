@@ -1,8 +1,8 @@
 import h5py
 import pandas as pd
 import numpy as np
-import cv2
 from sklearn.model_selection import train_test_split
+from utils.images import load_image
 
 def get_metadata():
     metadata = pd.read_csv('metadata_processed.csv')
@@ -23,11 +23,6 @@ def get_data(metadata):
     train, validation, test = split_data(metadata)
     return [train[:,-1], get_labels(train)], [validation[:,-1], get_labels(validation)], [test[:,-1], get_labels(test)]
 
-def read_img(filename):
-    img = cv2.imread(filename).astype(np.float32)
-    normImg = np.zeros(img.shape)
-    return cv2.normalize(img, normImg, 0, 1, cv2.NORM_MINMAX)
-
 def new_dataset(data_file, filename, num_samples, size = 3):
     if size != 3:
         x, y, z = size
@@ -44,13 +39,13 @@ def fill_dataset(dataset, files, size, step = 100):
     while(len(files) - curr_index > step):
         for i in range(curr_index, curr_index + step):
             print('\r %s' %str(i+1) + ' of ' + str(len(files)), end="   ")
-            temp[i-curr_index,:,:,:] = read_img(files[i])
+            temp[i-curr_index,:,:,:] = np.expand_dims(load_image(files[i]), axis=-1)
         dataset[curr_index:curr_index+step,:,:,:] = temp
         curr_index = curr_index + step
     
     for j in range(curr_index, len(files)):
         print('\r%s' %str(j+1) + ' of ' + str(len(files)), end="   ")
-        dataset[j,:,:,:] = read_img(files[j])
+        dataset[j,:,:,:] = np.expand_dims(load_image(files[j]), axis=-1)
 
 def create_dataset():
     print('\n>>> CREATING DATASET<<<')
@@ -64,7 +59,7 @@ def create_dataset():
                 ['Log_train','Log_validation','Log_test'],
                 ['labels_train','labels_validation','labels_test']]
     
-    img_size = (302, 465, 3)
+    img_size = (1200, 1255, 1)
     dataset_file = h5py.File('dataset.hdf5','a')
     
     for category in datasets:
@@ -72,11 +67,11 @@ def create_dataset():
             print('Filling dataset:', ds_name)
             if 'CQT' in ds_name:
                 CQT_dataset = new_dataset(dataset_file, ds_name, len(file_cat), img_size)
-                CQT_files = ['CQT spectrograms/'+file[2:-4]+'.png' for file in file_cat]
+                CQT_files = ['CQT_spectrograms/'+file[2:-4]+'.tif' for file in file_cat]
                 fill_dataset(CQT_dataset, CQT_files, img_size)
             elif 'Log' in ds_name:
                 Log_dataset = new_dataset(dataset_file, ds_name, len(file_cat), img_size)
-                Log_files = ['Log-power spectrograms/'+file[2:-4]+'.png' for file in file_cat]
+                Log_files = ['spectrograms/'+file[2:-4]+'.tif' for file in file_cat]
                 fill_dataset(Log_dataset, Log_files, img_size)
             elif 'labels' in ds_name:
                 Labels_dataset = new_dataset(dataset_file, ds_name, len(label_cat))

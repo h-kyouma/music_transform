@@ -34,7 +34,6 @@ def metadata_processing():
     metadata = metadata[metadata['mp3_path'] != '9/american_baroque-dances_and_suites_of_rameau_and_couperin-25-le_petit_rien_xiveme_ordre_couperin-88-117.mp3']
     metadata = metadata[metadata['mp3_path'] != '8/jacob_heringman-josquin_des_prez_lute_settings-19-gintzler__pater_noster-204-233.mp3']
     
-    
     metadata.to_csv('metadata_processed.csv', index=False)
     print('>>> SAVED TO: metadata_processed.csv <<<')
     

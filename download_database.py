@@ -9,6 +9,7 @@ def download_file(url, filename):
         file.write(temp.content)
         
 def unpack_files(parts):
+    if not os.path.exists('data'): os.makedirs('data')
     print('>>> UNPACKING <<<')
     with open('mp3.zip','ab') as result:
         for file in parts:
@@ -16,7 +17,7 @@ def unpack_files(parts):
                 result.write(temp.read())
                 
     with ZipFile('mp3.zip', 'r') as zip_ref:
-        zip_ref.extractall()
+        zip_ref.extractall('data')
         
     os.remove('mp3.zip')
 
@@ -32,7 +33,7 @@ def download_database():
     [os.remove(part) for part in parts]
     
     #remove corrupted files
-    os.remove('9/american_baroque-dances_and_suites_of_rameau_and_couperin-25-le_petit_rien_xiveme_ordre_couperin-88-117.mp3')
-    os.remove('8/jacob_heringman-josquin_des_prez_lute_settings-19-gintzler__pater_noster-204-233.mp3')
+    os.remove('data/9/american_baroque-dances_and_suites_of_rameau_and_couperin-25-le_petit_rien_xiveme_ordre_couperin-88-117.mp3')
+    os.remove('data/8/jacob_heringman-josquin_des_prez_lute_settings-19-gintzler__pater_noster-204-233.mp3')
     
     print('>>> DONE <<<')

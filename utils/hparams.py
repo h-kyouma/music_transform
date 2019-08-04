@@ -5,7 +5,7 @@ hparams = {
     'preemphasis': 0.97,
     'min_level_db': -100,
     'ref_level_db': 20,
-    'max_abs_value': 4,
+    'max_abs_value': 1,
     'power': 1.5,
     'fft_size': 2398, #so the output resolution of botth types of spectrograms is 1255x1200
     'hop_size': 512,
